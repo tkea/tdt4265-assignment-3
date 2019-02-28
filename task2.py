@@ -29,18 +29,25 @@ class Model(nn.Module):
 
         # Define the convolutional layers
         self.feature_extractor = nn.Sequential(
-            nn.BatchNorm2d(image_channels),
-            nn.ReLU(),
             nn.Conv2d(
                 in_channels=image_channels,
+                out_channels=16,
+                kernel_size=3,
+                stride=1,
+                padding=1
+            ),
+            nn.ReLU(),
+            nn.BatchNorm2d(16),
+            nn.Conv2d(
+                in_channels=16,
                 out_channels=32,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
-            nn.MaxPool2d(2, 2),
-            nn.BatchNorm2d(32),
             nn.ReLU(),
+            nn.BatchNorm2d(32),
+            nn.MaxPool2d(2, 2),
             nn.Conv2d(
                 in_channels=32,
                 out_channels=64,
@@ -48,7 +55,18 @@ class Model(nn.Module):
                 stride=1,
                 padding=1
             ),
-            nn.MaxPool2d(2,2)
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.Conv2d(
+                in_channels=64,
+                out_channels=128,
+                kernel_size=3,
+                stride=1,
+                padding=1
+            ),
+            nn.ReLU(),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(4, 4),
         )
         # Initialize our last fully connected layer
         # Inputs all extracted features from the convolutional layers
@@ -56,8 +74,7 @@ class Model(nn.Module):
         # There is no need for softmax activation function, as this is
         # included with nn.CrossEntropyLoss
         self.classifier = nn.Sequential(
-            nn.BatchNorm1d(4096),
-            nn.Linear(4096, 64),
+            nn.Linear(2048, 64),
             nn.ReLU(),
             nn.BatchNorm1d(64),
             nn.Linear(64, num_classes),
