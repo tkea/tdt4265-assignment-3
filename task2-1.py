@@ -66,7 +66,6 @@ class Model(nn.Module):
             nn.Linear(2048, 64),
             nn.ReLU(),
             nn.Linear(64, num_classes),
-            nn.Softmax(dim=1)
         )
 
     def forward(self, x):
@@ -95,7 +94,7 @@ class Trainer:
         # Define hyperparameters
         self.epochs = 10
         self.batch_size = 64
-        self.learning_rate = 5e-2
+        self.learning_rate = 1e-3 #5e-2
         self.early_stop_count = 4
 
         # Architecture
