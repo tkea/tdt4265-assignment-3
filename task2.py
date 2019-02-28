@@ -40,23 +40,32 @@ class Model(nn.Module):
             nn.BatchNorm2d(64),
             nn.Conv2d(
                 in_channels=64,
+                out_channels=64,
+                kernel_size=3,
+                stride=1,
+                padding=1
+            ),
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(
+                in_channels=64,
                 out_channels=128,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.BatchNorm2d(128),
             nn.Conv2d(
                 in_channels=128,
-                out_channels=256,
+                out_channels=128,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
             nn.ReLU(),
-            nn.BatchNorm2d(256),
+            nn.BatchNorm2d(128),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
         # Initialize our last fully connected layer
@@ -65,6 +74,9 @@ class Model(nn.Module):
         # There is no need for softmax activation function, as this is
         # included with nn.CrossEntropyLoss
         self.classifier = nn.Sequential(
+            nn.Linear(8192, 4096),
+            nn.ReLU(),
+            nn.BatchNorm1d(4096),
             nn.Linear(4096, 2048),
             nn.ReLU(),
             nn.BatchNorm1d(2048),
