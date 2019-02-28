@@ -32,27 +32,27 @@ class Model(nn.Module):
             nn.Conv2d(
                 in_channels=image_channels,
                 out_channels=32,
-                kernel_size=3,
+                kernel_size=5,
                 stride=1,
-                padding=1
+                padding=2
             ),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(
                 in_channels=32,
                 out_channels=64,
-                kernel_size=3,
+                kernel_size=5,
                 stride=1,
-                padding=1
+                padding=2
             ),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(
                 in_channels=64,
                 out_channels=128,
-                kernel_size=3,
+                kernel_size=5,
                 stride=1,
-                padding=1
+                padding=2
             ),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
@@ -63,8 +63,8 @@ class Model(nn.Module):
         # There is no need for softmax activation function, as this is
         # included with nn.CrossEntropyLoss
         self.classifier = nn.Sequential(
-            nn.Linear(2048, 128),
-            nn.Linear(128, 64),
+            nn.Linear(2048, 64),
+            nn.ReLU(),
             nn.Linear(64, num_classes),
         )
 
@@ -104,7 +104,7 @@ class Trainer:
         # Initialize the mode
         self.model = Model(image_channels=3, num_classes=10)
         self.model.apply(init_weights)
-        
+
         # Transfer model to GPU VRAM, if possible.
         self.model = to_cuda(self.model)
 
