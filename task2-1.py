@@ -5,6 +5,15 @@ from torch import nn
 from dataloaders import load_cifar10
 from utils import to_cuda, compute_loss_and_accuracy
 
+def init_weights(m):
+    if type(m) == torch.nn.Conv2d:
+        torch.nn.init.xavier_normal_(m.weight)
+        if m.bias is not None:
+            m.bias.data.fill_(0.0)
+    if type(m) == torch.nn.Linear:
+        torch.nn.init.xavier_normal_(m.weight)
+        m.bias.data.fill_(0.0)
+
 class Model(nn.Module):
 
     def __init__(self,
@@ -94,6 +103,8 @@ class Trainer:
         self.loss_criterion = nn.CrossEntropyLoss()
         # Initialize the mode
         self.model = Model(image_channels=3, num_classes=10)
+        self.model.apply(init_weights)
+        
         # Transfer model to GPU VRAM, if possible.
         self.model = to_cuda(self.model)
 
