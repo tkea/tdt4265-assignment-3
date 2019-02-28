@@ -66,6 +66,7 @@ class Model(nn.Module):
             nn.Linear(2048, 64),
             nn.ReLU(),
             nn.Linear(64, num_classes),
+            nn.Softmax(dim=0)
         )
 
     def forward(self, x):
@@ -109,7 +110,7 @@ class Trainer:
         self.model = to_cuda(self.model)
 
         # Define our optimizer. SGD = Stochastich Gradient Descent
-        self.optimizer = torch.optim.SGD(self.model.parameters(),
+        self.optimizer = torch.optim.Adam(self.model.parameters(),
                                          self.learning_rate)
 
         # Load our dataset
