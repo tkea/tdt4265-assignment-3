@@ -5,6 +5,7 @@ from torch import nn
 import torchvision
 from dataloaders import load_cifar10
 from utils import to_cuda, compute_loss_and_accuracy
+import numpy as np
 
 class Model(nn.Module):
     def __init__(self):
@@ -174,6 +175,9 @@ if __name__ == "__main__":
     plt.legend()
     plt.savefig(os.path.join("plots", "final_accuracy.png"))
     plt.show()
+
+    np.save("validation_loss_transfer.npy", np.array(trainer.VALIDATION_LOSS))
+    np.save("training_loss_transfer.npy", np.array(trainer.TRAIN_LOSS))
 
     print("Final training accuracy:", trainer.TRAIN_ACC[-trainer.early_stop_count])
     print("Final test accuracy:", trainer.TEST_ACC[-trainer.early_stop_count])
