@@ -2,91 +2,26 @@ import os
 import matplotlib.pyplot as plt
 import torch
 from torch import nn
+import torchvision
 from dataloaders import load_cifar10
 from utils import to_cuda, compute_loss_and_accuracy
 
-def init_weights(m):
-    if type(m) == torch.nn.Conv2d:
-        torch.nn.init.xavier_normal_(m.weight)
-        if m.bias is not None:
-            m.bias.data.fill_(0.0)
-    if type(m) == torch.nn.Linear:
-        torch.nn.init.xavier_normal_(m.weight)
-        m.bias.data.fill_(0.0)
-
 class Model(nn.Module):
-
-    def __init__(self,
-                 image_channels,
-                 num_classes):
-        """
-            Is called when model is initialized.
-            Args:
-                image_channels. Number of color channels in image (3)
-                num_classes: Number of classes we want to predict (10)
-        """
+    def __init__(self):
         super().__init__()
+        self.model = torchvision.models.resnet18(pretrained=True)
+        self.model.fc = nn.Linear(512*4, 10)
 
-        # Define the convolutional layers
-        self.feature_extractor = nn.Sequential(
-            nn.Conv2d(
-                in_channels=image_channels,
-                out_channels=64,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.ReLU(),
-            nn.BatchNorm2d(64),
-            nn.Conv2d(
-                in_channels=64,
-                out_channels=128,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Conv2d(
-                in_channels=128,
-                out_channels=256,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.ReLU(),
-            nn.BatchNorm2d(256),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-        )
-        # Initialize our last fully connected layer
-        # Inputs all extracted features from the convolutional layers
-        # Outputs num_classes predictions, 1 for each class.
-        # There is no need for softmax activation function, as this is
-        # included with nn.CrossEntropyLoss
-        self.classifier = nn.Sequential(
-            nn.Linear(4096, 2048),
-            nn.ReLU(),
-            nn.BatchNorm1d(2048),
-            nn.Linear(2048, 64),
-            nn.ReLU(),
-            nn.BatchNorm1d(64),
-            nn.Linear(64, num_classes),
-        )
+        for param in self.model.parameters():
+            param.requires_grad = False
+        for param in self.model.fc.parameters():
+            param.requires_grad = True
+        for param in self.model.layer4.parameters():
+            param.requires_grad = True
 
     def forward(self, x):
-        """
-        Performs a forward pass through the model
-        Args:
-            x: Input image, shape: [batch_size, 3, 32, 32]
-        """
-
-        # Run image through convolutional layers
-        x = self.feature_extractor(x)
-        # Reshape our input to (batch_size, num_output_features)
-        x = x.view(x.size()[0], -1)
-        # Forward pass through the fully-connected layers.
-        x = self.classifier(x)
+        x = nn.functional.interpolate(x, scale_factor=8)
+        x = self.model(x)
         return x
 
 
@@ -99,8 +34,8 @@ class Trainer:
         """
         # Define hyperparameters
         self.epochs = 10
-        self.batch_size = 64
-        self.learning_rate = 1e-3 #5e-2
+        self.batch_size = 32
+        self.learning_rate = 5e-4
         self.early_stop_count = 4
 
         # Architecture
@@ -108,8 +43,7 @@ class Trainer:
         # Since we are doing multi-class classification, we use the CrossEntropyLoss
         self.loss_criterion = nn.CrossEntropyLoss()
         # Initialize the mode
-        self.model = Model(image_channels=3, num_classes=10)
-        self.model.apply(init_weights)
+        self.model = Model()
 
         # Transfer model to GPU VRAM, if possible.
         self.model = to_cuda(self.model)
