@@ -122,7 +122,7 @@ class Trainer:
         self.dataloader_train, self.dataloader_val, self.dataloader_test = load_cifar10(self.batch_size)
 
         self.validation_check = len(self.dataloader_train) // 2
-
+        print(f"Validation check: {self.validation_check}")
         # Tracking variables
         self.VALIDATION_LOSS = []
         self.TEST_LOSS = []
