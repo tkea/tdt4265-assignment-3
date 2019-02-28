@@ -242,3 +242,6 @@ if __name__ == "__main__":
     print("Final training accuracy:", trainer.TRAIN_ACC[-trainer.early_stop_count])
     print("Final test accuracy:", trainer.TEST_ACC[-trainer.early_stop_count])
     print("Final validation accuracy:", trainer.VALIDATION_ACC[-trainer.early_stop_count])
+    print("Final training loss:", trainer.TRAIN_LOSS[-trainer.early_stop_count])
+    print("Final test loss:", trainer.TEST_LOSS[-trainer.early_stop_count])
+    print("Final validation loss:", trainer.VALIDATION_LOSS[-trainer.early_stop_count])
