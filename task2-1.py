@@ -66,7 +66,7 @@ class Model(nn.Module):
             nn.Linear(2048, 64),
             nn.ReLU(),
             nn.Linear(64, num_classes),
-            nn.Softmax(dim=0)
+            nn.Softmax(dim=1)
         )
 
     def forward(self, x):

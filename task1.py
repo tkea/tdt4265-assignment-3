@@ -222,5 +222,6 @@ if __name__ == "__main__":
     plt.savefig(os.path.join("plots", "final_accuracy.png"))
     plt.show()
 
+    print("Final training accuracy:", trainer.TRAIN_ACC[-trainer.early_stop_count])
     print("Final test accuracy:", trainer.TEST_ACC[-trainer.early_stop_count])
     print("Final validation accuracy:", trainer.VALIDATION_ACC[-trainer.early_stop_count])
