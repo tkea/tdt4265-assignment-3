@@ -36,8 +36,8 @@ class Model(nn.Module):
                 stride=1,
                 padding=1
             ),
-            nn.BatchNorm2d(32),
             nn.ReLU(),
+            nn.BatchNorm2d(32),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(
                 in_channels=32,
@@ -46,8 +46,8 @@ class Model(nn.Module):
                 stride=1,
                 padding=1
             ),
-            nn.BatchNorm2d(64),
             nn.ReLU(),
+            nn.BatchNorm2d(64),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(
                 in_channels=64,
@@ -56,8 +56,8 @@ class Model(nn.Module):
                 stride=1,
                 padding=1
             ),
-            nn.BatchNorm2d(128),
             nn.ReLU(),
+            nn.BatchNorm2d(128),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
         # Initialize our last fully connected layer
@@ -67,8 +67,8 @@ class Model(nn.Module):
         # included with nn.CrossEntropyLoss
         self.classifier = nn.Sequential(
             nn.Linear(2048, 64),
-            nn.BatchNorm1d(64),
             nn.ReLU(),
+            nn.BatchNorm1d(64),
             nn.Linear(64, num_classes),
         )
 
