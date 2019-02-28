@@ -113,8 +113,10 @@ class Trainer:
         self.model = to_cuda(self.model)
 
         # Define our optimizer. SGD = Stochastich Gradient Descent
-        self.optimizer = torch.optim.Adam(self.model.parameters(),
-                                         self.learning_rate)
+        self.optimizer = torch.optim.Adam(
+            self.model.parameters(),
+            self.learning_rate,
+        )
 
         # Load our dataset
         self.dataloader_train, self.dataloader_val, self.dataloader_test = load_cifar10(self.batch_size)
