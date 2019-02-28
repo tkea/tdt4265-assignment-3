@@ -31,41 +31,41 @@ class Model(nn.Module):
         self.feature_extractor = nn.Sequential(
             nn.Conv2d(
                 in_channels=image_channels,
-                out_channels=64,
+                out_channels=16,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
             nn.ReLU(),
-            nn.BatchNorm2d(64),
+            nn.BatchNorm2d(16),
             nn.Conv2d(
-                in_channels=64,
-                out_channels=64,
+                in_channels=16,
+                out_channels=16,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
             nn.ReLU(),
-            nn.BatchNorm2d(64),
+            nn.BatchNorm2d(16),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(
-                in_channels=64,
-                out_channels=128,
+                in_channels=16,
+                out_channels=32,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
             nn.ReLU(),
-            nn.BatchNorm2d(128),
+            nn.BatchNorm2d(32),
             nn.Conv2d(
-                in_channels=128,
-                out_channels=128,
+                in_channels=32,
+                out_channels=32,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
             nn.ReLU(),
-            nn.BatchNorm2d(128),
+            nn.BatchNorm2d(32),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
         # Initialize our last fully connected layer
@@ -74,12 +74,6 @@ class Model(nn.Module):
         # There is no need for softmax activation function, as this is
         # included with nn.CrossEntropyLoss
         self.classifier = nn.Sequential(
-            nn.Linear(8192, 4096),
-            nn.ReLU(),
-            nn.BatchNorm1d(4096),
-            nn.Linear(4096, 2048),
-            nn.ReLU(),
-            nn.BatchNorm1d(2048),
             nn.Linear(2048, 64),
             nn.ReLU(),
             nn.BatchNorm1d(64),
